@@ -15,7 +15,7 @@ public class CommentController {
     // POST /items/{itemId}/comments
     @PostMapping()
     public ResponseDto createComment(
-            @RequestParam("itemId") Long itemId,
+            @PathVariable("itemId") Long itemId,
             @RequestBody CommentDto commentDto
             ) {
         commentService.createComment(itemId, commentDto);

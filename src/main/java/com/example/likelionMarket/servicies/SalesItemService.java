@@ -10,6 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class SalesItemService {
@@ -34,7 +36,7 @@ public class SalesItemService {
         Pageable pageable = PageRequest.of(
                 page,
                 size,
-                Sort.by("id").descending());
+                Sort.by("id"));
         Page<SalesItemEntity> salesItemEntityPage =
                 salesItemRepository.findAll(pageable);
 
@@ -42,5 +44,14 @@ public class SalesItemService {
                 salesItemEntityPage.map(SalesItemDto::fromEntity);
 
         return salesItemDtoPage;
+    }
+
+    public SalesItemDto readSalesItem(Long itemId) {
+        Optional<SalesItemEntity> targetItem
+                = salesItemRepository.findById(itemId);
+        if (targetItem.isEmpty()) {
+            throw new RuntimeException("존재하지 않는 물품입니다");
+        }
+        return SalesItemDto.fromEntity(targetItem.get());
     }
 }

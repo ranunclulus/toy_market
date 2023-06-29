@@ -34,4 +34,12 @@ public class SalesItemController {
     ) {
         return salesItemService.readItemPages(page, size);
     }
+
+    // GET /items/{itemId}
+    @GetMapping("/{itemId}")
+    public SalesItemDto readItem(
+            @PathVariable("itemId") Long id
+    ) {
+        return salesItemService.readSalesItem(id);
+    }
 }

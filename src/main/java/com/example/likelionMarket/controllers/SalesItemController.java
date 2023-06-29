@@ -19,9 +19,12 @@ public class SalesItemController {
     // POST /items
     // 중고 아이템 업로드
     @PostMapping()
-    public SalesItemDto createSalesItem(
+    public ResponseDto createSalesItem(
             @RequestBody SalesItemDto salesItemDto
             ) {
-        return salesItemService.createItem(salesItemDto);
+        salesItemService.createItem(salesItemDto);
+        ResponseDto responseDto = new ResponseDto();
+        responseDto.setMessage("등록을 완료했습니다");
+        return responseDto;
     }
 }

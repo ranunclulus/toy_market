@@ -30,6 +30,12 @@ dependencies {
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	// gson
+	implementation 'com.google.code.gson:gson:2.10.1'
+
+	// sqlite
+	runtimeOnly 'org.xerial:sqlite-jdbc:3.41.2.2'
+	runtimeOnly 'org.hibernate.orm:hibernate-community-dialects:6.2.4.Final'
 }
 
 tasks.named('test') {

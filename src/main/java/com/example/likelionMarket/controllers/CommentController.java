@@ -4,6 +4,7 @@ import com.example.likelionMarket.dtos.CommentDto;
 import com.example.likelionMarket.dtos.ResponseDto;
 import com.example.likelionMarket.servicies.CommentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,5 +23,13 @@ public class CommentController {
         ResponseDto responseDto = new ResponseDto();
         responseDto.setMessage("댓글이 등록되었습니다");
         return responseDto;
+    }
+
+    // GET /items/{itemId}/comments
+    @GetMapping
+    public Page<CommentDto> readAll(
+            @PathVariable("itemId") Long itemId
+    ) {
+        return commentService.readCommentPages(itemId);
     }
 }

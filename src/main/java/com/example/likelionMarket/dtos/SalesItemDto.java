@@ -1,26 +1,30 @@
 package com.example.likelionMarket.dtos;
 
 import lombok.Data;
-import com.example.likelionMarket.entities.salesItemEntity;
+import com.example.likelionMarket.entities.SalesItemEntity;
 
 @Data
-public class salesItemDto {
+public class SalesItemDto {
 
+    private Long id;
     private String title;
     private String description;
     private String image_url;
-    private Integer min_price_wanted;
+    private Integer minPriceWanted;
     private String status;
     private String writer;
+    private String password;
 
-    public salesItemDto toEntity(salesItemEntity salesItemEntity) {
-        salesItemDto salesItemDto = new salesItemDto();
+    public static SalesItemDto fromEntity(SalesItemEntity salesItemEntity) {
+        SalesItemDto salesItemDto = new SalesItemDto();
+        salesItemDto.setId(salesItemEntity.getId());
         salesItemDto.setTitle(salesItemEntity.getTitle());
         salesItemDto.setDescription(salesItemEntity.getDescription());
         salesItemDto.setImage_url(salesItemEntity.getImage_url());
-        salesItemDto.setMin_price_wanted(salesItemEntity.getMin_price_wanted());
+        salesItemDto.setMinPriceWanted(salesItemEntity.getMinPriceWanted());
         salesItemDto.setStatus(salesItemEntity.getStatus());
         salesItemDto.setWriter(salesItemEntity.getWriter());
+        salesItemDto.setPassword(salesItemEntity.getPassword());
         return salesItemDto;
     }
 }

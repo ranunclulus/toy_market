@@ -1,8 +1,9 @@
 package com.example.likelionMarket.controllers;
 
-import com.example.likelionMarket.dtos.salesItemDto;
-import com.example.likelionMarket.entities.salesItemEntity;
-import com.example.likelionMarket.servicies.salesItemService;
+import com.example.likelionMarket.dtos.ResponseDto;
+import com.example.likelionMarket.dtos.SalesItemDto;
+import com.example.likelionMarket.entities.SalesItemEntity;
+import com.example.likelionMarket.servicies.SalesItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,15 +13,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/items")
-public class salesItemController {
-    private final salesItemService salesItemService;
+public class SalesItemController {
+    private final SalesItemService salesItemService;
 
     // POST /items
     // 중고 아이템 업로드
     @PostMapping()
-    public salesItemDto createSalesItem(
-            @RequestBody salesItemEntity salesItemEntity
+    public SalesItemDto createSalesItem(
+            @RequestBody SalesItemDto salesItemDto
             ) {
-
+        return salesItemService.createItem(salesItemDto);
     }
 }

@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "sales_item")
-public class salesItemEntity {
+public class SalesItemEntity {
 
     // PK
     @Id
@@ -23,7 +23,7 @@ public class salesItemEntity {
     private String image_url;
 
     @Column(nullable = false)
-    private Integer min_price_wanted;
+    private Integer minPriceWanted;
 
     private String status;
 

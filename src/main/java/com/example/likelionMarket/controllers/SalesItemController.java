@@ -54,4 +54,15 @@ public class SalesItemController {
         responseDto.setMessage("물품이 수정되었습니다");
         return responseDto;
     }
+
+    // DELETE /items/{itemId}
+    @DeleteMapping("/{itemId}")
+    public ResponseDto deleteItem(
+            @PathVariable("itemId") Long itemId
+    ) {
+        salesItemService.deleteSalesItem(itemId);
+        ResponseDto responseDto = new ResponseDto();
+        responseDto.setMessage("물품을 삭제했습니다.");
+        return responseDto;
+    }
 }

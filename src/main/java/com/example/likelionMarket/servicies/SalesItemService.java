@@ -95,4 +95,13 @@ public class SalesItemService {
             targetEntity.setMinPriceWanted(salesItemDto.getMinPriceWanted());
         SalesItemDto.fromEntity(salesItemRepository.save(targetEntity));
     }
+
+    // 물품 삭제
+    public void deleteSalesItem(Long itemId) {
+        Optional<SalesItemEntity> targetItem
+                = salesItemRepository.findById(itemId);
+        if(targetItem.isEmpty())
+            throw new RuntimeException("그런 아이템 없음");
+        salesItemRepository.delete(targetItem.get());
+    }
 }

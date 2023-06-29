@@ -20,7 +20,7 @@ public class SalesItemEntity {
     @Column(nullable = false)
     private String description;
 
-    private String image_url;
+    private String imageUrl;
 
     @Column(nullable = false)
     private Integer minPriceWanted;

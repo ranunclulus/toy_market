@@ -11,7 +11,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Slf4j
@@ -32,7 +37,7 @@ public class SalesItemService {
         newSalesItem.setPassword(salesItemDto.getPassword());
         newSalesItem.setMinPriceWanted(salesItemDto.getMinPriceWanted());
         // 초기에 이미지는 null
-        newSalesItem.setImage_url(null);
+        newSalesItem.setImageUrl(null);
         salesItemRepository.save(newSalesItem);
     }
 
@@ -103,5 +108,27 @@ public class SalesItemService {
         if(targetItem.isEmpty())
             throw new RuntimeException("그런 아이템 없음");
         salesItemRepository.delete(targetItem.get());
+    }
+
+    // 이미지 업로드
+    public void updateItemImage(Long itemId, MultipartFile multipartFile) throws IOException {
+        Optional<SalesItemEntity> targetItem =
+                salesItemRepository.findById(itemId);
+        // 아이템이 없다면 오류
+        if(targetItem.isEmpty())
+            throw new RuntimeException("이미지 올릴 아이템 없음");
+
+        // 저장할 파일 경로 생성
+        Files.createDirectories(Path.of("media/itemImages"));
+        // 겹치지 않게 시간으로 파일 이름 작성
+        LocalDateTime now = LocalDateTime.now();
+        String imageUrl = String.format(
+                "media/itemImages/%s.png", now.toString());
+        Path uploadTo = Path.of(imageUrl);
+        multipartFile.transferTo(uploadTo);
+        // 객체의 이미지도 바꾸기
+        SalesItemEntity salesItemEntity = targetItem.get();
+        salesItemEntity.setImageUrl(imageUrl);
+        salesItemRepository.save(salesItemEntity);
     }
 }

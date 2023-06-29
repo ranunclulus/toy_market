@@ -9,7 +9,7 @@ public class SalesItemDto {
     private Long id;
     private String title;
     private String description;
-    private String image_url;
+    private String imageUrl;
     private Integer minPriceWanted;
     private String status;
     private String writer;
@@ -20,7 +20,7 @@ public class SalesItemDto {
         salesItemDto.setId(salesItemEntity.getId());
         salesItemDto.setTitle(salesItemEntity.getTitle());
         salesItemDto.setDescription(salesItemEntity.getDescription());
-        salesItemDto.setImage_url(salesItemEntity.getImage_url());
+        salesItemDto.setImageUrl(salesItemEntity.getImageUrl());
         salesItemDto.setMinPriceWanted(salesItemEntity.getMinPriceWanted());
         salesItemDto.setStatus(salesItemEntity.getStatus());
         salesItemDto.setWriter(salesItemEntity.getWriter());

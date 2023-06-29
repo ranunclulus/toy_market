@@ -6,7 +6,12 @@ import com.example.likelionMarket.entities.SalesItemEntity;
 import com.example.likelionMarket.servicies.SalesItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.nio.file.Path;
 
 @RestController
 @RequiredArgsConstructor
@@ -55,6 +60,19 @@ public class SalesItemController {
         return responseDto;
     }
 
+    // PUT /items/{itemId}/image
+    @PutMapping(value = "/{itemId}/image",
+    consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseDto updateItemImage(
+            @PathVariable("itemId") Long itemId,
+            @RequestParam("photo") MultipartFile multipartFile
+            ) throws IOException {
+        salesItemService.updateItemImage(itemId, multipartFile);
+        ResponseDto responseDto = new ResponseDto();
+        responseDto.setMessage("이미지가 등록되었습니다");
+        return responseDto;
+    }
+
     // DELETE /items/{itemId}
     @DeleteMapping("/{itemId}")
     public ResponseDto deleteItem(
@@ -62,7 +80,7 @@ public class SalesItemController {
     ) {
         salesItemService.deleteSalesItem(itemId);
         ResponseDto responseDto = new ResponseDto();
-        responseDto.setMessage("물품을 삭제했습니다.");
+        responseDto.setMessage("물품을 삭제했습니다");
         return responseDto;
     }
 }

@@ -38,8 +38,20 @@ public class SalesItemController {
     // GET /items/{itemId}
     @GetMapping("/{itemId}")
     public SalesItemDto readItem(
-            @PathVariable("itemId") Long id
+            @PathVariable("itemId") Long itemId
     ) {
-        return salesItemService.readSalesItem(id);
+        return salesItemService.readSalesItem(itemId);
+    }
+
+    // PUT /items/{itemId}
+    @PutMapping("/{itemId}")
+    public ResponseDto updateItem(
+            @PathVariable("itemId") Long itemId,
+            @RequestBody SalesItemDto salesItemDto
+    ) {
+        salesItemService.updateSalesItem(itemId, salesItemDto);
+        ResponseDto responseDto = new ResponseDto();
+        responseDto.setMessage("물품이 수정되었습니다");
+        return responseDto;
     }
 }

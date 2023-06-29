@@ -5,10 +5,8 @@ import com.example.likelionMarket.dtos.SalesItemDto;
 import com.example.likelionMarket.entities.SalesItemEntity;
 import com.example.likelionMarket.servicies.SalesItemService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,5 +24,14 @@ public class SalesItemController {
         ResponseDto responseDto = new ResponseDto();
         responseDto.setMessage("등록을 완료했습니다");
         return responseDto;
+    }
+
+    // GET /items?page={page}&limit={limit}
+    @GetMapping
+    public Page<SalesItemDto> readAll(
+            @RequestParam("page") Integer page,
+            @RequestParam("size") Integer size
+    ) {
+        return salesItemService.readItemPages(page, size);
     }
 }

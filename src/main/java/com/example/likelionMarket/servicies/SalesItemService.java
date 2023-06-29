@@ -4,6 +4,10 @@ import com.example.likelionMarket.dtos.SalesItemDto;
 import com.example.likelionMarket.entities.SalesItemEntity;
 import com.example.likelionMarket.repositories.SalesItemRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,5 +28,19 @@ public class SalesItemService {
         newSalesItem.setImage_url(salesItemDto.getImage_url());
         return SalesItemDto.fromEntity(
                 salesItemRepository.save(newSalesItem));
+    }
+
+    public Page<SalesItemDto> readItemPages(Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(
+                page,
+                size,
+                Sort.by("id").descending());
+        Page<SalesItemEntity> salesItemEntityPage =
+                salesItemRepository.findAll(pageable);
+
+        Page<SalesItemDto> salesItemDtoPage =
+                salesItemEntityPage.map(SalesItemDto::fromEntity);
+
+        return salesItemDtoPage;
     }
 }

@@ -11,6 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 
 @RequiredArgsConstructor
 @Service
@@ -52,5 +54,20 @@ public class CommentService {
         Page<CommentDto> commentDtoPage =
                 commentEntitiyPage.map(CommentDto::fromEntity);
         return commentDtoPage;
+    }
+
+    // 댓글 삭제하
+    public void deleteComment(Long itemId, Long commentID, CommentDto commentDto) {
+        // 댓글을 달고자 하는 물품이 존재하지 않을 때
+        if(!salesItemRepository.existsById(itemId)) {
+            throw new RuntimeException("물품이 없어서 댓글을 못 삭제");
+        }
+        Optional<CommentEntity> commentEntityOptional =
+                commentRepository.findById(commentID);
+        if(commentEntityOptional.isEmpty())
+            throw new RuntimeException("그런 댓글 없어서 삭제 못 함");
+        if(!commentDto.getPassword().equals(commentEntityOptional.get().getPassword()))
+            throw new RuntimeException("비밀번호가 달라서 삭제 못 함");
+        commentRepository.delete(commentEntityOptional.get());
     }
 }

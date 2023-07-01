@@ -32,4 +32,17 @@ public class CommentController {
     ) {
         return commentService.readCommentPages(itemId);
     }
+
+    // DELETE /items/{itemId}/comments/{commentId}
+    @DeleteMapping("/{commentId}")
+    public ResponseDto deleteComment(
+            @PathVariable("itemId") Long itemId,
+            @PathVariable("commentId") Long commentID,
+            @RequestBody CommentDto commentDto
+    ) {
+        commentService.deleteComment(itemId, commentID, commentDto);
+        ResponseDto responseDto = new ResponseDto();
+        responseDto.setMessage("댓글을 삭제했습니다");
+        return responseDto;
+    }
 }

@@ -46,9 +46,9 @@ public class NegotiationController {
             @PathVariable("proposalId") Long proposalId,
             @RequestBody NegotiationDto negotiationDto
     ) {
-        negotiationService.updateNegotiation(itemId, proposalId, negotiationDto);
+        String response = negotiationService.updateNegotiation(itemId, proposalId, negotiationDto);
         ResponseDto responseDto = new ResponseDto();
-        responseDto.setMessage("제안이 수정되었습니다");
+        responseDto.setMessage(response);
         return responseDto;
     }
 

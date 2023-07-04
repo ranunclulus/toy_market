@@ -1,6 +1,7 @@
 package com.example.likelionMarket.servicies;
 
 import com.example.likelionMarket.dtos.NegotiationDto;
+import com.example.likelionMarket.dtos.ResponseDto;
 import com.example.likelionMarket.entities.NegotiationEntity;
 import com.example.likelionMarket.repositories.NegotiationRepository;
 import com.example.likelionMarket.repositories.SalesItemRepository;
@@ -47,7 +48,8 @@ public class NegotiationService {
     }
 
     // 제안 수정하기
-    public void updateNegotiation(Long itemId, Long proposalId, NegotiationDto negotiationDto) {
+    public String updateNegotiation(Long itemId, Long proposalId, NegotiationDto negotiationDto) {
+        String message = null;
         if(!salesItemRepository.existsById(itemId)) {
             throw new RuntimeException("이런 아이템 없어서 제안 수정 불가능");
         }
@@ -74,13 +76,20 @@ public class NegotiationService {
 
         // 제안의 상태를 수정할 때
         if (negotiationDto.getStatus() != null) {
-            String changeStatus = negotiationDto.getStatus();
-            // 확정이면 수락일 때만 가능
-            if(changeStatus.equals("확정") && !negotiationEntity.getStatus().equals("수락"))
-                throw new RuntimeException("수락 상태일 때만 확정할 수 있습니다");
+            String changeStatus = negotiationDto.getStatus(); // 바꾸려는 상태
+            if (changeStatus.equals("확정")) {
+                if(negotiationEntity.getStatus().equals("수락"))
+                    message = "구매가 확정되었습니다";
+                else
+                    throw new RuntimeException("수락 상태일 때만 거래를 확정할 수 있음");
+            }
+            else {
+                message = "제안의 상태가 변경되었습니다";
+            }
             negotiationEntity.setStatus(changeStatus);
+            negotiationRepository.save(negotiationEntity);
         }
-        negotiationRepository.save(negotiationEntity);
+        return message;
     }
 
     // 제안 삭제하기

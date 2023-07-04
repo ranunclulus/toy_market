@@ -4,11 +4,12 @@ import com.example.likelionMarket.dtos.NegotiationDto;
 import com.example.likelionMarket.dtos.ResponseDto;
 import com.example.likelionMarket.servicies.NegotiationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/items/{itemId}/proposal")
+@RequestMapping("/items/{itemId}/proposals")
 public class NegotiationController {
     private final NegotiationService negotiationService;
 
@@ -23,4 +24,17 @@ public class NegotiationController {
         responseDto.setMessage("구매 제안이 등록되었습니다");
         return responseDto;
     }
+
+    // GET /items/{itemId}/proposals?writer=jeeho.edu&password=qwerty1234&page=1
+    @GetMapping()
+    public Page<NegotiationDto> readProposal(
+            @RequestParam("writer") String writer,
+            @RequestParam("password") String password,
+            @RequestParam("page") Integer page,
+            @PathVariable("itemId") Long itemId
+    ) {
+        return negotiationService.readNegotiation(writer, password, page, itemId);
+    }
+
+    // PUT /items/{itemId}/proposals/{proposalId}
 }

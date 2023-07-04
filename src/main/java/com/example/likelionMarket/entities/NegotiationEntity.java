@@ -1,8 +1,6 @@
 package com.example.likelionMarket.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
@@ -10,10 +8,19 @@ import lombok.Data;
 @Table(name = "negotiation")
 public class NegotiationEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
     private Long itemId;
+
+    @Column(nullable = false)
     private Long suggestedPrice;
+
     private String status;
+
+    @Column(nullable = false)
     private String writer;
+
     private String password;
 }

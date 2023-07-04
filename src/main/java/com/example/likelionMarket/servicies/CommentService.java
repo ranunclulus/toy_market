@@ -20,6 +20,7 @@ import java.util.Optional;
 public class CommentService {
     private final CommentRepository commentRepository;
     private final SalesItemRepository salesItemRepository;
+    private final SalesItemService salesItemService;
 
 
     // 새로운 댓글 생성
@@ -32,7 +33,7 @@ public class CommentService {
         CommentEntity commentEntity = new CommentEntity();
         commentEntity.setId(commentDto.getId());
         commentEntity.setWriter(commentDto.getWriter());
-        commentEntity.setReply(commentDto.getReply());
+        commentEntity.setReply(null);
         commentEntity.setContent(commentDto.getContent());
         commentEntity.setPassword(commentDto.getPassword());
         commentEntity.setItemId(itemId);
@@ -91,6 +92,25 @@ public class CommentService {
             targetEntity.setWriter(commentDto.getWriter());
         if(commentDto.getContent() != null)
             targetEntity.setContent(commentDto.getContent());
+        commentRepository.save(targetEntity);
+    }
+
+    // 답글 추가하기
+    public void updateReply(Long itemId, Long commentId, CommentDto commentDto) {
+        // 댓글을 달고자 하는 물품이 존재하지 않을 때
+        if(!salesItemRepository.existsById(itemId)) {
+            throw new RuntimeException("물품이 없어서 댓글 답글 불가");
+        }
+        Optional<CommentEntity> commentEntityOptional =
+                commentRepository.findById(commentId);
+        if(commentEntityOptional.isEmpty())
+            throw new RuntimeException("그런 댓글 없어서 답글 불가");
+        if(!commentDto.getWriter().equals(salesItemRepository.findById(itemId).get().getWriter()))
+            throw new RuntimeException("작성자 달라서 답글 불가");
+        if(!commentDto.getPassword().equals(salesItemRepository.findById(itemId).get().getPassword()))
+            throw new RuntimeException("비밀번호가 달라서 답글 불가");
+        CommentEntity targetEntity = commentEntityOptional.get();
+        targetEntity.setReply(commentDto.getReply());
         commentRepository.save(targetEntity);
     }
 }

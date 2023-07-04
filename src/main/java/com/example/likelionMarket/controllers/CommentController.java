@@ -46,6 +46,19 @@ public class CommentController {
         return responseDto;
     }
 
+    // PUT /items/{itemId}/comments/{commentId}/reply
+    @PutMapping("/{commentId}/reply")
+    public ResponseDto updateReply(
+            @PathVariable("itemId") Long itemId,
+            @PathVariable("commentId") Long commentId,
+            @RequestBody CommentDto commentDto
+    ) {
+        commentService.updateReply(itemId, commentId, commentDto);
+        ResponseDto responseDto = new ResponseDto();
+        responseDto.setMessage("댓글에 답변이 추가되었습니다");
+        return responseDto;
+    }
+
     // DELETE /items/{itemId}/comments/{commentId}
     @DeleteMapping("/{commentId}")
     public ResponseDto deleteComment(

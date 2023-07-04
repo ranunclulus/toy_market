@@ -131,4 +131,5 @@ public class SalesItemService {
         salesItemEntity.setImageUrl(imageUrl);
         salesItemRepository.save(salesItemEntity);
     }
+
 }

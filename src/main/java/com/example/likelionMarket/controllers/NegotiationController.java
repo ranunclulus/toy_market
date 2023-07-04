@@ -30,7 +30,7 @@ public class NegotiationController {
 
     // GET /items/{itemId}/proposals?writer=jeeho.edu&password=qwerty1234&page=1
     @GetMapping()
-    public List<NegotiationEntity> readProposal(
+    public Page<NegotiationDto> readProposal(
             @RequestParam("writer") String writer,
             @RequestParam("password") String password,
             @RequestParam("page") Integer page,

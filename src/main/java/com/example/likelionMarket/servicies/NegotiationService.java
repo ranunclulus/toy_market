@@ -2,7 +2,9 @@ package com.example.likelionMarket.servicies;
 
 import com.example.likelionMarket.dtos.NegotiationDto;
 import com.example.likelionMarket.dtos.ResponseDto;
+import com.example.likelionMarket.dtos.SalesItemDto;
 import com.example.likelionMarket.entities.NegotiationEntity;
+import com.example.likelionMarket.entities.SalesItemEntity;
 import com.example.likelionMarket.repositories.NegotiationRepository;
 import com.example.likelionMarket.repositories.SalesItemRepository;
 import lombok.RequiredArgsConstructor;
@@ -37,15 +39,7 @@ public class NegotiationService {
     }
 
 
-    // TODO
-    public List<NegotiationEntity> readNegotiation(
-            String writer,
-            String password,
-            Integer page,
-            Long itemId) {
-        List<NegotiationEntity> list = negotiationRepository.findAllByItemId(itemId);
-        return list;
-    }
+
 
     // 제안 수정하기
     public String updateNegotiation(Long itemId, Long proposalId, NegotiationDto negotiationDto) {
@@ -105,5 +99,24 @@ public class NegotiationService {
             throw new RuntimeException("이런 제안 없어서 제안 삭제 불가능");
         }
         negotiationRepository.delete(negotiationEntityOptional.get());
+    }
+
+    public Page<NegotiationDto> readNegotiation(
+            String writer,
+            String password,
+            Integer page,
+            Long itemId) {
+        if(!salesItemRepository.existsById(itemId))
+            throw new RuntimeException("이런 물건 없어서 페이징 불가");
+        Pageable pageable = PageRequest.of(
+                page,
+                25,
+                Sort.by("id"));
+        Page<NegotiationEntity> negotiationEntityPage =
+                negotiationRepository.findAllByWriterAndPassword(writer, password, pageable);
+
+        Page<NegotiationDto> negotiationDtoPage = negotiationEntityPage.map(NegotiationDto::fromEntity);
+
+        return negotiationDtoPage;
     }
 }

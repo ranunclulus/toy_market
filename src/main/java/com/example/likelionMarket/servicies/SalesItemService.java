@@ -2,6 +2,8 @@ package com.example.likelionMarket.servicies;
 
 import com.example.likelionMarket.dtos.SalesItemDto;
 import com.example.likelionMarket.entities.SalesItemEntity;
+import com.example.likelionMarket.exceptions.badRequest.PasswordException;
+import com.example.likelionMarket.exceptions.notFound.SalesItemExistException;
 import com.example.likelionMarket.repositories.SalesItemRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,7 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -61,7 +62,7 @@ public class SalesItemService {
         Optional<SalesItemEntity> targetItem
                 = salesItemRepository.findById(itemId);
         if (targetItem.isEmpty()) {
-            throw new RuntimeException("아이템이 없음");
+            throw new SalesItemExistException();
         }
         return SalesItemDto.fromEntity(targetItem.get());
     }
@@ -72,13 +73,13 @@ public class SalesItemService {
                 = salesItemRepository.findById(itemId);
         // 수정하고자 하는 아이템이 존재하지 않을 때
         if(targetOptionalItem.isEmpty()) {
-            throw new RuntimeException("아이템이 없음");
+            throw new SalesItemExistException();
         }
         SalesItemEntity targetEntity = targetOptionalItem.get();
 
         // 수정하려는 상품의 비밀번호와 사용자가 보낸 비밀번호가 맞지 않다면 오류
         if(!targetEntity.getPassword().equals(salesItemDto.getPassword())) {
-            throw new RuntimeException("비밀 번호 다름");
+            throw new PasswordException();
         }
 
         // TODO if문 반복을 줄일 수 있을까?
@@ -106,7 +107,7 @@ public class SalesItemService {
         Optional<SalesItemEntity> targetItem
                 = salesItemRepository.findById(itemId);
         if(targetItem.isEmpty())
-            throw new RuntimeException("그런 아이템 없음");
+            throw new SalesItemExistException();
         salesItemRepository.delete(targetItem.get());
     }
 
@@ -116,7 +117,7 @@ public class SalesItemService {
                 salesItemRepository.findById(itemId);
         // 아이템이 없다면 오류
         if(targetItem.isEmpty())
-            throw new RuntimeException("이미지 올릴 아이템 없음");
+            throw new SalesItemExistException();
 
         // 저장할 파일 경로 생성
         Files.createDirectories(Path.of("media/itemImages"));

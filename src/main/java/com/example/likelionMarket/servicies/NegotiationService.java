@@ -1,10 +1,12 @@
 package com.example.likelionMarket.servicies;
 
 import com.example.likelionMarket.dtos.NegotiationDto;
-import com.example.likelionMarket.dtos.ResponseDto;
-import com.example.likelionMarket.dtos.SalesItemDto;
 import com.example.likelionMarket.entities.NegotiationEntity;
-import com.example.likelionMarket.entities.SalesItemEntity;
+import com.example.likelionMarket.exceptions.badRequest.PasswordException;
+import com.example.likelionMarket.exceptions.badRequest.StatusException;
+import com.example.likelionMarket.exceptions.badRequest.WriterException;
+import com.example.likelionMarket.exceptions.notFound.NegotiationExistException;
+import com.example.likelionMarket.exceptions.notFound.SalesItemExistException;
 import com.example.likelionMarket.repositories.NegotiationRepository;
 import com.example.likelionMarket.repositories.SalesItemRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -26,7 +27,7 @@ public class NegotiationService {
     // 제안 만들기
     public void createNegotiation(Long itemId, NegotiationDto negotiationDto) {
         if (!salesItemRepository.existsById(itemId)) {
-            throw new RuntimeException("제안을 등록할 아이템이 없음");
+            throw new SalesItemExistException();
         }
         NegotiationEntity negotiationEntity = new NegotiationEntity();
         negotiationEntity.setId(negotiationDto.getId());
@@ -45,24 +46,24 @@ public class NegotiationService {
     public String updateNegotiation(Long itemId, Long proposalId, NegotiationDto negotiationDto) {
         String message = null;
         if(!salesItemRepository.existsById(itemId)) {
-            throw new RuntimeException("이런 아이템 없어서 제안 수정 불가능");
+            throw new SalesItemExistException();
         }
 
         Optional<NegotiationEntity> negotiationEntityOptional =
                 negotiationRepository.findById(proposalId);
 
         if (negotiationEntityOptional.isEmpty()) {
-            throw new RuntimeException("이런 제안 없어서 제안 수정 불가능");
+            throw new NegotiationExistException();
         }
 
         NegotiationEntity negotiationEntity = negotiationEntityOptional.get();
 
         if(!negotiationEntity.getWriter().equals(negotiationDto.getWriter())) {
-            throw new RuntimeException("작성자가 달라서 제안 수정 불가");
+            throw new WriterException();
         }
 
         if(!negotiationEntity.getPassword().equals(negotiationDto.getPassword())) {
-            throw new RuntimeException("비밀번호가 달라서 제안 수정 불가능");
+            throw new PasswordException();
         }
         // 제안하는 가격을 수정할 때
         if(negotiationDto.getSuggestedPrice() != null)
@@ -75,7 +76,7 @@ public class NegotiationService {
                 if(negotiationEntity.getStatus().equals("수락"))
                     message = "구매가 확정되었습니다";
                 else
-                    throw new RuntimeException("수락 상태일 때만 거래를 확정할 수 있음");
+                    throw new StatusException();
             }
             else {
                 message = "제안의 상태가 변경되었습니다";
@@ -89,14 +90,14 @@ public class NegotiationService {
     // 제안 삭제하기
     public void deleteNegotiation(Long itemId, Long proposalId) {
         if(!salesItemRepository.existsById(itemId)) {
-            throw new RuntimeException("이런 아이템 없어서 제안 삭제 불가능");
+            throw new SalesItemExistException();
         }
 
         Optional<NegotiationEntity> negotiationEntityOptional =
                 negotiationRepository.findById(proposalId);
 
         if (negotiationEntityOptional.isEmpty()) {
-            throw new RuntimeException("이런 제안 없어서 제안 삭제 불가능");
+            throw new NegotiationExistException();
         }
         negotiationRepository.delete(negotiationEntityOptional.get());
     }
@@ -107,7 +108,7 @@ public class NegotiationService {
             Integer page,
             Long itemId) {
         if(!salesItemRepository.existsById(itemId))
-            throw new RuntimeException("이런 물건 없어서 페이징 불가");
+            throw new SalesItemExistException();
         Pageable pageable = PageRequest.of(
                 page,
                 25,

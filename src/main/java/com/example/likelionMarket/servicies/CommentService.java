@@ -1,8 +1,11 @@
 package com.example.likelionMarket.servicies;
 
 import com.example.likelionMarket.dtos.CommentDto;
-import com.example.likelionMarket.dtos.ResponseDto;
 import com.example.likelionMarket.entities.CommentEntity;
+import com.example.likelionMarket.exceptions.badRequest.PasswordException;
+import com.example.likelionMarket.exceptions.badRequest.WriterException;
+import com.example.likelionMarket.exceptions.notFound.CommentExistException;
+import com.example.likelionMarket.exceptions.notFound.SalesItemExistException;
 import com.example.likelionMarket.repositories.CommentRepository;
 import com.example.likelionMarket.repositories.SalesItemRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +30,7 @@ public class CommentService {
     public void createComment(Long itemId, CommentDto commentDto) {
         // 댓글을 달고자 하는 물품이 존재하지 않을 때
         if(!salesItemRepository.existsById(itemId)) {
-            throw new RuntimeException("물품이 없어서 댓글을 못 달음");
+            throw new SalesItemExistException();
         }
         // 댓글을 달고자 하는 물품이 존재할 때
         CommentEntity commentEntity = new CommentEntity();
@@ -45,7 +48,7 @@ public class CommentService {
     public Page<CommentDto> readCommentPages(Long itemId) {
         // 댓글을 달고자 하는 물품이 존재하지 않을 때
         if(!salesItemRepository.existsById(itemId)) {
-            throw new RuntimeException("물품이 없어서 댓글을 못 달음");
+            throw new SalesItemExistException();
         }
 
         Pageable pageable = PageRequest.of(
@@ -62,14 +65,14 @@ public class CommentService {
     public void deleteComment(Long itemId, Long commentId, CommentDto commentDto) {
         // 댓글을 달고자 하는 물품이 존재하지 않을 때
         if(!salesItemRepository.existsById(itemId)) {
-            throw new RuntimeException("물품이 없어서 댓글을 못 삭제");
+            throw new SalesItemExistException();
         }
         Optional<CommentEntity> commentEntityOptional =
                 commentRepository.findById(commentId);
         if(commentEntityOptional.isEmpty())
-            throw new RuntimeException("그런 댓글 없어서 삭제 못 함");
+            throw new CommentExistException();
         if(!commentDto.getPassword().equals(commentEntityOptional.get().getPassword() ))
-            throw new RuntimeException("비밀번호가 달라서 삭제 못 함");
+            throw new PasswordException();
         commentRepository.delete(commentEntityOptional.get());
     }
 
@@ -77,14 +80,14 @@ public class CommentService {
     public void updateComment(Long itemId, Long commentId, CommentDto commentDto) {
         // 댓글을 달고자 하는 물품이 존재하지 않을 때
         if(!salesItemRepository.existsById(itemId)) {
-            throw new RuntimeException("물품이 없어서 댓글 수정 불가");
+            throw new SalesItemExistException();
         }
         Optional<CommentEntity> commentEntityOptional =
                 commentRepository.findById(commentId);
         if(commentEntityOptional.isEmpty())
-            throw new RuntimeException("그런 댓글 없어서 수정 불가");
+            throw new CommentExistException();
         if(!commentDto.getPassword().equals(commentEntityOptional.get().getPassword() ))
-            throw new RuntimeException("비밀번호가 달라서 수정 불가");
+            throw new PasswordException();
         CommentEntity targetEntity = commentEntityOptional.get();
 
         // writer, content만 수정 가능
@@ -99,16 +102,16 @@ public class CommentService {
     public void updateReply(Long itemId, Long commentId, CommentDto commentDto) {
         // 댓글을 달고자 하는 물품이 존재하지 않을 때
         if(!salesItemRepository.existsById(itemId)) {
-            throw new RuntimeException("물품이 없어서 댓글 답글 불가");
+            throw new SalesItemExistException();
         }
         Optional<CommentEntity> commentEntityOptional =
                 commentRepository.findById(commentId);
         if(commentEntityOptional.isEmpty())
-            throw new RuntimeException("그런 댓글 없어서 답글 불가");
+            throw new CommentExistException();
         if(!commentDto.getWriter().equals(salesItemRepository.findById(itemId).get().getWriter()))
-            throw new RuntimeException("작성자 달라서 답글 불가");
+            throw new WriterException();
         if(!commentDto.getPassword().equals(salesItemRepository.findById(itemId).get().getPassword()))
-            throw new RuntimeException("비밀번호가 달라서 답글 불가");
+            throw new PasswordException();
         CommentEntity targetEntity = commentEntityOptional.get();
         targetEntity.setReply(commentDto.getReply());
         commentRepository.save(targetEntity);

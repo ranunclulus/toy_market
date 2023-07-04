@@ -48,4 +48,16 @@ public class NegotiationController {
         responseDto.setMessage("제안이 수정되었습니다");
         return responseDto;
     }
+
+    // DELETE /items/{itemId}/proposals/{proposalId}
+    @DeleteMapping("/{proposalId}")
+    public ResponseDto deleteProposal(
+            @PathVariable("itemId") Long itemId,
+            @PathVariable("proposalId") Long proposalId
+    ) {
+        negotiationService.deleteNegotiation(itemId, proposalId);
+        ResponseDto responseDto = new ResponseDto();
+        responseDto.setMessage("제안이 삭제되었습니다");
+        return responseDto;
+    }
 }

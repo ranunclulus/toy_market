@@ -88,4 +88,19 @@ public class NegotiationService {
         negotiationEntity.setSuggestedPrice(negotiationDto.getSuggestedPrice());
         negotiationRepository.save(negotiationEntity);
     }
+
+    // 제안 삭제하기
+    public void deleteNegotiation(Long itemId, Long proposalId) {
+        if(!salesItemRepository.existsById(itemId)) {
+            throw new RuntimeException("이런 아이템 없어서 제안 삭제 불가능");
+        }
+
+        Optional<NegotiationEntity> negotiationEntityOptional =
+                negotiationRepository.findById(proposalId);
+
+        if (negotiationEntityOptional.isEmpty()) {
+            throw new RuntimeException("이런 제안 없어서 제안 삭제 불가능");
+        }
+        negotiationRepository.delete(negotiationEntityOptional.get());
+    }
 }

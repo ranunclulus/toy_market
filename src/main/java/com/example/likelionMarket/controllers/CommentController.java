@@ -33,14 +33,27 @@ public class CommentController {
         return commentService.readCommentPages(itemId);
     }
 
+    // PUT /items/{itemId}/comments/{commentId}
+    @PutMapping("/{commentId}")
+    public ResponseDto updateComment(
+            @PathVariable("itemId") Long itemId,
+            @PathVariable("commentId") Long commentId,
+            @RequestBody CommentDto commentDto
+    ) {
+        commentService.updateComment(itemId, commentId, commentDto);
+        ResponseDto responseDto = new ResponseDto();
+        responseDto.setMessage("댓글이 수정되었습니다");
+        return responseDto;
+    }
+
     // DELETE /items/{itemId}/comments/{commentId}
     @DeleteMapping("/{commentId}")
     public ResponseDto deleteComment(
             @PathVariable("itemId") Long itemId,
-            @PathVariable("commentId") Long commentID,
+            @PathVariable("commentId") Long commentId,
             @RequestBody CommentDto commentDto
     ) {
-        commentService.deleteComment(itemId, commentID, commentDto);
+        commentService.deleteComment(itemId, commentId, commentDto);
         ResponseDto responseDto = new ResponseDto();
         responseDto.setMessage("댓글을 삭제했습니다");
         return responseDto;

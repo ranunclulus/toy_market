@@ -37,4 +37,15 @@ public class NegotiationController {
     }
 
     // PUT /items/{itemId}/proposals/{proposalId}
+    @PutMapping("/{proposalId}")
+    public ResponseDto updateProposal(
+            @PathVariable("itemId") Long itemId,
+            @PathVariable("proposalId") Long proposalId,
+            @RequestBody NegotiationDto negotiationDto
+    ) {
+        negotiationService.updateNegotiation(itemId, proposalId, negotiationDto);
+        ResponseDto responseDto = new ResponseDto();
+        responseDto.setMessage("제안이 수정되었습니다");
+        return responseDto;
+    }
 }

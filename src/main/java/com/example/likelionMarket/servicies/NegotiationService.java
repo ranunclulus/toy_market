@@ -11,6 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @Service
 public class NegotiationService {
@@ -58,5 +60,32 @@ public class NegotiationService {
         Page<NegotiationDto> negotiationDtoPage =
                 negotiationEntityPage.map(NegotiationDto::fromEntity);
         return negotiationDtoPage;
+    }
+
+    // 제안 수정하기
+    public void updateNegotiation(Long itemId, Long proposalId, NegotiationDto negotiationDto) {
+        if(!salesItemRepository.existsById(itemId)) {
+            throw new RuntimeException("이런 아이템 없어서 제안 수정 불가능");
+        }
+
+        Optional<NegotiationEntity> negotiationEntityOptional =
+                negotiationRepository.findById(proposalId);
+
+        if (negotiationEntityOptional.isEmpty()) {
+            throw new RuntimeException("이런 제안 없어서 제안 수정 불가능");
+        }
+
+        NegotiationEntity negotiationEntity = negotiationEntityOptional.get();
+
+        if(!negotiationEntity.getWriter().equals(negotiationDto.getWriter())) {
+            throw new RuntimeException("작성자가 달라서 제안 수정 불가");
+        }
+
+        if(!negotiationEntity.getPassword().equals(negotiationDto.getPassword())) {
+            throw new RuntimeException("비밀번호가 달라서 제안 수정 불가능");
+        }
+
+        negotiationEntity.setSuggestedPrice(negotiationDto.getSuggestedPrice());
+        negotiationRepository.save(negotiationEntity);
     }
 }

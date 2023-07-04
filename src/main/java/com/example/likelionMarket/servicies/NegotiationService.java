@@ -1,7 +1,9 @@
 package com.example.likelionMarket.servicies;
 
 import com.example.likelionMarket.dtos.NegotiationDto;
+import com.example.likelionMarket.dtos.ResponseDto;
 import com.example.likelionMarket.entities.NegotiationEntity;
+import com.example.likelionMarket.entities.SalesItemEntity;
 import com.example.likelionMarket.exceptions.badRequest.PasswordException;
 import com.example.likelionMarket.exceptions.badRequest.StatusException;
 import com.example.likelionMarket.exceptions.badRequest.WriterException;
@@ -45,19 +47,24 @@ public class NegotiationService {
     // 제안 수정하기
     public String updateNegotiation(Long itemId, Long proposalId, NegotiationDto negotiationDto) {
         String message = null;
+        // 그런 아이템 없을 때
         if(!salesItemRepository.existsById(itemId)) {
             throw new SalesItemExistException();
         }
 
         Optional<NegotiationEntity> negotiationEntityOptional =
                 negotiationRepository.findById(proposalId);
-
+        // 그런 제안 없을 때
         if (negotiationEntityOptional.isEmpty()) {
             throw new NegotiationExistException();
         }
 
         NegotiationEntity negotiationEntity = negotiationEntityOptional.get();
 
+        // 아이템 작성자가 수락 혹은 거절을 할 때
+        if(negotiationDto.getWriter().equals(salesItemRepository.findById(itemId).get().getWriter())) {
+
+        }
         if(!negotiationEntity.getWriter().equals(negotiationDto.getWriter())) {
             throw new WriterException();
         }
@@ -119,5 +126,109 @@ public class NegotiationService {
         Page<NegotiationDto> negotiationDtoPage = negotiationEntityPage.map(NegotiationDto::fromEntity);
 
         return negotiationDtoPage;
+    }
+
+    // 글 작성자가 거래를 수락 혹은 거절
+    public ResponseDto updateStatus(Long itemId, Long proposalId, NegotiationDto negotiationDto) {
+        // 그런 아이템 없을 때
+        if(!salesItemRepository.existsById(itemId)) {
+            throw new SalesItemExistException();
+        }
+
+        Optional<NegotiationEntity> negotiationEntityOptional =
+                negotiationRepository.findById(proposalId);
+        // 그런 제안 없을 때
+        if (negotiationEntityOptional.isEmpty()) {
+            throw new NegotiationExistException();
+        }
+
+        NegotiationEntity negotiationEntity = negotiationEntityOptional.get();
+
+        // 아이템 작성자 다를 때
+        if(!negotiationDto.getWriter().equals(salesItemRepository.findById(itemId).get().getWriter())) {
+            throw new WriterException();
+        }
+
+        // 비밀번호가 다를 때
+        if(!negotiationDto.getPassword().equals(salesItemRepository.findById(itemId).get().getPassword())) {
+            throw new PasswordException();
+        }
+
+        negotiationEntity.setStatus(negotiationDto.getStatus());
+        negotiationRepository.save(negotiationEntity);
+        ResponseDto responseDto = new ResponseDto();
+        responseDto.setMessage("제안의 상태가 변경되었습니다");
+        return responseDto;
+    }
+
+    public ResponseDto successStatus(Long itemId, Long proposalId, NegotiationDto negotiationDto) {
+        // 그런 아이템 없을 때
+        if(!salesItemRepository.existsById(itemId)) {
+            throw new SalesItemExistException();
+        }
+
+        Optional<NegotiationEntity> negotiationEntityOptional =
+                negotiationRepository.findById(proposalId);
+
+        // 그런 제안 없을 때
+        if (negotiationEntityOptional.isEmpty()) {
+            throw new NegotiationExistException();
+        }
+
+        NegotiationEntity negotiationEntity = negotiationEntityOptional.get();
+
+        // 수락 상태가 아닐 때
+        if (!negotiationEntity.getStatus().equals("수락"))
+            throw new StatusException();
+
+        // 제안 작성자 다를 때
+        if(!negotiationDto.getWriter().equals(negotiationEntity.getWriter())) {
+            throw new WriterException();
+        }
+
+        // 비밀번호가 다를 때
+        if(!negotiationDto.getPassword().equals(negotiationEntity.getPassword())) {
+            throw new PasswordException();
+        }
+
+        negotiationEntity.setStatus(negotiationDto.getStatus());
+        negotiationRepository.save(negotiationEntity);
+        ResponseDto responseDto = new ResponseDto();
+        responseDto.setMessage("구매가 확정되었습니다");
+        return responseDto;
+    }
+
+    // 가격이 변동될 떄
+    public ResponseDto updateSuggestedPrice(Long itemId, Long proposalId, NegotiationDto negotiationDto) {
+        // 그런 아이템 없을 때
+        if(!salesItemRepository.existsById(itemId)) {
+            throw new SalesItemExistException();
+        }
+
+        Optional<NegotiationEntity> negotiationEntityOptional =
+                negotiationRepository.findById(proposalId);
+
+        // 그런 제안 없을 때
+        if (negotiationEntityOptional.isEmpty()) {
+            throw new NegotiationExistException();
+        }
+
+        NegotiationEntity negotiationEntity = negotiationEntityOptional.get();
+
+        // 제안 작성자 다를 때
+        if(!negotiationDto.getWriter().equals(negotiationEntity.getWriter())) {
+            throw new WriterException();
+        }
+
+        // 비밀번호가 다를 때
+        if(!negotiationDto.getPassword().equals(negotiationEntity.getPassword())) {
+            throw new PasswordException();
+        }
+
+        negotiationEntity.setSuggestedPrice(negotiationDto.getSuggestedPrice());
+        negotiationRepository.save(negotiationEntity);
+        ResponseDto responseDto = new ResponseDto();
+        responseDto.setMessage("제안이 수정되었습니다");
+        return responseDto;
     }
 }

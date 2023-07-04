@@ -6,6 +6,7 @@ import com.example.likelionMarket.entities.NegotiationEntity;
 import com.example.likelionMarket.servicies.NegotiationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -46,10 +47,18 @@ public class NegotiationController {
             @PathVariable("proposalId") Long proposalId,
             @RequestBody NegotiationDto negotiationDto
     ) {
-        String response = negotiationService.updateNegotiation(itemId, proposalId, negotiationDto);
-        ResponseDto responseDto = new ResponseDto();
-        responseDto.setMessage(response);
-        return responseDto;
+        String newStatus = negotiationDto.getStatus();
+        Long newSuggestedPrice = negotiationDto.getSuggestedPrice();
+        // 금액 제안인 경우
+        if (newStatus == null) {
+            return negotiationService.updateSuggestedPrice(itemId, proposalId, negotiationDto);
+        }
+        // 상태 변경인 경우
+        if (newStatus.equals("수락") || newStatus.equals("거절")) {
+            return negotiationService.updateStatus(itemId, proposalId, negotiationDto);
+        }
+        // 거래 확정인 경우
+        return negotiationService.successStatus(itemId, proposalId, negotiationDto);
     }
 
     // DELETE /items/{itemId}/proposals/{proposalId}

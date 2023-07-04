@@ -8,5 +8,6 @@ import java.util.List;
 
 public interface NegotiationRepository
         extends JpaRepository<NegotiationEntity, Long> {
-    public List<NegotiationEntity> findAllByWriter(String writer);
+    public List<NegotiationEntity> findAllByItemId(Long writer);
+
 }

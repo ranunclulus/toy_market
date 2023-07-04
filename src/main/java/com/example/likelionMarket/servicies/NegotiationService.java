@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -36,30 +37,13 @@ public class NegotiationService {
 
 
     // TODO
-    public Page<NegotiationDto> readNegotiation(
+    public List<NegotiationEntity> readNegotiation(
             String writer,
             String password,
             Integer page,
             Long itemId) {
-        if(!salesItemRepository.existsById(itemId))
-            throw new RuntimeException("이런 아이템이 없어서 보여 주기 불가능");
-
-        if(negotiationRepository.findAllByWriter(writer).isEmpty())
-            throw new RuntimeException("이런 작성자가 제시한 제안 없음");
-
-        if(!salesItemRepository.findById(itemId).get().getPassword().equals(password))
-            throw new RuntimeException("비밀번호가 달라서 제안을 보여 줄 수 없음");
-
-        Pageable pageable = PageRequest.of(
-                page,
-                25,
-                Sort.by("id"));
-        Page<NegotiationEntity> negotiationEntityPage =
-                negotiationRepository.findAll(pageable);
-
-        Page<NegotiationDto> negotiationDtoPage =
-                negotiationEntityPage.map(NegotiationDto::fromEntity);
-        return negotiationDtoPage;
+        List<NegotiationEntity> list = negotiationRepository.findAllByItemId(itemId);
+        return list;
     }
 
     // 제안 수정하기
@@ -84,8 +68,18 @@ public class NegotiationService {
         if(!negotiationEntity.getPassword().equals(negotiationDto.getPassword())) {
             throw new RuntimeException("비밀번호가 달라서 제안 수정 불가능");
         }
+        // 제안하는 가격을 수정할 때
+        if(negotiationDto.getSuggestedPrice() != null)
+            negotiationEntity.setSuggestedPrice(negotiationDto.getSuggestedPrice());
 
-        negotiationEntity.setSuggestedPrice(negotiationDto.getSuggestedPrice());
+        // 제안의 상태를 수정할 때
+        if (negotiationDto.getStatus() != null) {
+            String changeStatus = negotiationDto.getStatus();
+            // 확정이면 수락일 때만 가능
+            if(changeStatus.equals("확정") && !negotiationEntity.getStatus().equals("수락"))
+                throw new RuntimeException("수락 상태일 때만 확정할 수 있습니다");
+            negotiationEntity.setStatus(changeStatus);
+        }
         negotiationRepository.save(negotiationEntity);
     }
 

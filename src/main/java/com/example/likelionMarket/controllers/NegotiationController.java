@@ -2,10 +2,13 @@ package com.example.likelionMarket.controllers;
 
 import com.example.likelionMarket.dtos.NegotiationDto;
 import com.example.likelionMarket.dtos.ResponseDto;
+import com.example.likelionMarket.entities.NegotiationEntity;
 import com.example.likelionMarket.servicies.NegotiationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,7 +30,7 @@ public class NegotiationController {
 
     // GET /items/{itemId}/proposals?writer=jeeho.edu&password=qwerty1234&page=1
     @GetMapping()
-    public Page<NegotiationDto> readProposal(
+    public List<NegotiationEntity> readProposal(
             @RequestParam("writer") String writer,
             @RequestParam("password") String password,
             @RequestParam("page") Integer page,

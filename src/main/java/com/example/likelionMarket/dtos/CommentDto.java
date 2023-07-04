@@ -13,7 +13,7 @@ public class CommentDto {
     private String content;
     private String reply;
 
-    public CommentDto fromEntity(CommentEntity commentEntity) {
+    public static CommentDto fromEntity(CommentEntity commentEntity) {
         CommentDto commentDto = new CommentDto();
         commentDto.setId(commentEntity.getId());
         commentDto.setItemId(commentEntity.getItemId());

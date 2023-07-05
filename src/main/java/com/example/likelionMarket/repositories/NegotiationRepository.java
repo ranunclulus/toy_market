@@ -11,5 +11,6 @@ import java.util.List;
 public interface NegotiationRepository
         extends JpaRepository<NegotiationEntity, Long> {
     Page<NegotiationEntity> findAllByWriterAndPassword(String writer, String password, Pageable pageable);
+    NegotiationEntity[] findAllByItemId(Long itemId);
 
 }

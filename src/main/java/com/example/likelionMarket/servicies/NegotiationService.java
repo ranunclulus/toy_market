@@ -193,6 +193,19 @@ public class NegotiationService {
 
         negotiationEntity.setStatus(negotiationDto.getStatus());
         negotiationRepository.save(negotiationEntity);
+
+        // 다른 구매 협상 모두 거절
+        NegotiationEntity[] otherNegotiations = negotiationRepository.findAllByItemId(itemId);
+        if(otherNegotiations.length != 0) {
+            for (NegotiationEntity negotiation:otherNegotiations
+                 ) {
+                // 내가 확정한 데이터일 때 패스
+                if(negotiation.equals(negotiationEntity)) continue;
+                // 아니라면 거절로 바꾸기
+                negotiation.setStatus("거절");
+                negotiationRepository.save(negotiation);
+            }
+        }
         ResponseDto responseDto = new ResponseDto();
         responseDto.setMessage("구매가 확정되었습니다");
         return responseDto;

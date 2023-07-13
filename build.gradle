@@ -34,7 +34,7 @@ dependencies {
 	implementation 'com.google.code.gson:gson:2.10.1'
 
 	// sqlite
-	runtimeOnly 'org.xerial:sqlite-jdbc:3.41.2.2'
+	implementation 'org.xerial:sqlite-jdbc:3.41.2.2'
 	runtimeOnly 'org.hibernate.orm:hibernate-community-dialects:6.2.4.Final'
 }
 

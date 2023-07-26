@@ -6,9 +6,22 @@
 
 멋사 마켓이란 흔히들 사용하는 번개장터, 당근마켓, 중고나라와 같이 사용자가 중고 물건을 판매하고자 글을 올리고, 구매자가 댓글을 달아 거래가 성사되는 플랫폼입니다. 실제 중고 거래 애플리케이션의 간단화 버전으로 중고 물품 거래가 등록된 `SalesItem`, 물품에 달리는 댓글인 `Comment`, 그리고 구매자가 가격을 할인받고자 제안할 수 있는 `Negotiation`으로 구성되어 있습니다.
 
-### Entity Relationship Diagram
+### Commit Convention
+| 태그이름 | 내용 |
+| --- | --- |
+| Feat | 새로운 기능 (파일 추가도 포함)을 추가할 경우 |
+| Fix | 버그를 고친 경우 |
+| Update | 코드 수정을 한 경우 |
+| !HOTFIX | 급하게 치명적인 버그를 고쳐야하는 경우 |
+| Style | 코드 포맷 변경, 세미 콜론 누락, 코드 수정이 없는 경우 |
+| Refactor | 프로덕션 코드 리팩토링 |
+| Comment | 필요한 주석 추가 및 변경 |
+| Docs | 문서를 수정한 경우 |
+| Test | 테스트 추가, 테스트 리팩토링(프로덕션 코드 변경 X) |
+| Chore | 빌드 태스트 업데이트, 패키지 매니저를 설정하는 경우(프로덕션 코드 변경 X) |
+| Rename | 파일 혹은 폴더명을 수정하거나 옮기는 작업만인 경우 |
+| Remove | 파일을 삭제하는 작업만 수행한 경우 |
 
-![https://private-user-images.githubusercontent.com/87214089/251006878-44837967-cf70-4554-af18-01d5c90b2a8f.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXkiOiJrZXkxIiwiZXhwIjoxNjg4NTQxOTk0LCJuYmYiOjE2ODg1NDE2OTQsInBhdGgiOiIvODcyMTQwODkvMjUxMDA2ODc4LTQ0ODM3OTY3LWNmNzAtNDU1NC1hZjE4LTAxZDVjOTBiMmE4Zi5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBSVdOSllBWDRDU1ZFSDUzQSUyRjIwMjMwNzA1JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDIzMDcwNVQwNzIxMzRaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT0zNGEyZTY4M2E4ZDJjZjVhZTU0YzAxODFkMWZjMzRhZDZkOWRlOWFlNTVkMzVmNjVmNTg4MWE4ZTc4OWUwYzQ5JlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZhY3Rvcl9pZD0wJmtleV9pZD0wJnJlcG9faWQ9MCJ9.DHNrELSvmFG8Jk99QqWyytKTj2xaS8FekkZYa6jROwM](https://private-user-images.githubusercontent.com/87214089/251006878-44837967-cf70-4554-af18-01d5c90b2a8f.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXkiOiJrZXkxIiwiZXhwIjoxNjg4NTQxOTk0LCJuYmYiOjE2ODg1NDE2OTQsInBhdGgiOiIvODcyMTQwODkvMjUxMDA2ODc4LTQ0ODM3OTY3LWNmNzAtNDU1NC1hZjE4LTAxZDVjOTBiMmE4Zi5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBSVdOSllBWDRDU1ZFSDUzQSUyRjIwMjMwNzA1JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDIzMDcwNVQwNzIxMzRaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT0zNGEyZTY4M2E4ZDJjZjVhZTU0YzAxODFkMWZjMzRhZDZkOWRlOWFlNTVkMzVmNjVmNTg4MWE4ZTc4OWUwYzQ5JlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZhY3Rvcl9pZD0wJmtleV9pZD0wJnJlcG9faWQ9MCJ9.DHNrELSvmFG8Jk99QqWyytKTj2xaS8FekkZYa6jROwM)
 ## Resources
 
 ### SalesItem

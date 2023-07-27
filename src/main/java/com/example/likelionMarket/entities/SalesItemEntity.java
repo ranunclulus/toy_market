@@ -3,6 +3,8 @@ package com.example.likelionMarket.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @Entity
 @Table(name = "sales_item")
@@ -30,4 +32,10 @@ public class SalesItemEntity {
     private String writer;
 
     private String password;
+
+    @OneToMany(mappedBy = "item")
+    private List<CommentEntity> comments;
+
+    @OneToMany(mappedBy = "item")
+    private List<NegotiationEntity> negotiations;
 }

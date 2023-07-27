@@ -28,6 +28,7 @@ public class CustomUserDetails implements UserDetails {
         details.password = entity.getPassword();
         details.email = entity.getEmail();
         details.phone = entity.getPhone();
+        details.createAt = entity.getCreatedAt();
         return details;
     }
 

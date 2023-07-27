@@ -1,6 +1,7 @@
 package com.example.likelionMarket.servicies;
 
 import com.example.likelionMarket.dtos.CustomUserDetails;
+import com.example.likelionMarket.entities.UserEntity;
 import com.example.likelionMarket.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -9,6 +10,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -53,7 +56,12 @@ public class JpaUserDetailsManager implements UserDetailsManager {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return null;
+    public CustomUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<UserEntity> optionalUser
+                = userRepository.findByUsername(username);
+        log.info(optionalUser.get().getUsername());
+        if (optionalUser.isEmpty())
+            throw new UsernameNotFoundException(username);
+        return CustomUserDetails.fromEntity(optionalUser.get());
     }
 }

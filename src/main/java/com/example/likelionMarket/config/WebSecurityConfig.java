@@ -18,6 +18,8 @@ public class WebSecurityConfig {
                         .permitAll()
                         .requestMatchers("/items")
                         .permitAll()
+                        .requestMatchers("/issue")
+                        .permitAll()
                 );
         return http.build();
     }

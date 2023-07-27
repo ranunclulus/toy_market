@@ -1,11 +1,14 @@
 package com.example.likelionMarket.servicies;
 
+import com.example.likelionMarket.dtos.CustomUserDetails;
 import com.example.likelionMarket.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @Slf4j
@@ -18,7 +21,15 @@ public class JpaUserDetailsManager implements UserDetailsManager {
 
     @Override
     public void createUser(UserDetails user) {
-
+        if (this.userExists(user.getUsername()))
+            throw new ResponseStatusException(HttpStatus.CONFLICT);
+        try {
+            this.userRepository.save(
+                    ((CustomUserDetails) user).newEntity());
+        } catch (ClassCastException e) {
+            log.error("failed to cast to {}", CustomUserDetails.class);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Override
@@ -38,7 +49,7 @@ public class JpaUserDetailsManager implements UserDetailsManager {
 
     @Override
     public boolean userExists(String username) {
-        return false;
+        return userRepository.existsByUsername(username);
     }
 
     @Override

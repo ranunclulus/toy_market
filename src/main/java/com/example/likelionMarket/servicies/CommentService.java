@@ -1,7 +1,9 @@
 package com.example.likelionMarket.servicies;
 
 import com.example.likelionMarket.dtos.CommentDto;
+import com.example.likelionMarket.dtos.SalesItemDto;
 import com.example.likelionMarket.entities.CommentEntity;
+import com.example.likelionMarket.entities.SalesItemEntity;
 import com.example.likelionMarket.exceptions.badRequest.PasswordException;
 import com.example.likelionMarket.exceptions.badRequest.WriterException;
 import com.example.likelionMarket.exceptions.notFound.CommentExistException;
@@ -39,7 +41,7 @@ public class CommentService {
         commentEntity.setReply(null);
         commentEntity.setContent(commentDto.getContent());
         commentEntity.setPassword(commentDto.getPassword());
-        commentEntity.setItemId(itemId);
+        commentEntity.setItem(salesItemRepository.findById(itemId).get());
         commentRepository.save(commentEntity);
     }
 

@@ -1,0 +1,48 @@
+package com.example.likelionMarket.servicies;
+
+import com.example.likelionMarket.repositories.UserRepository;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.provisioning.UserDetailsManager;
+import org.springframework.stereotype.Service;
+
+@Service
+@Slf4j
+public class JpaUserDetailsManager implements UserDetailsManager {
+    private final UserRepository userRepository;
+
+    public JpaUserDetailsManager(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    @Override
+    public void createUser(UserDetails user) {
+
+    }
+
+    @Override
+    public void updateUser(UserDetails user) {
+
+    }
+
+    @Override
+    public void deleteUser(String username) {
+
+    }
+
+    @Override
+    public void changePassword(String oldPassword, String newPassword) {
+
+    }
+
+    @Override
+    public boolean userExists(String username) {
+        return false;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return null;
+    }
+}

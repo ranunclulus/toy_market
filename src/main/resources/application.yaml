@@ -16,3 +16,5 @@ spring:
   web:
     resources:
       static-locations: file:media/,classpath:/static
+jwt:
+  secret: b8ae67e39d47519f3b53a0f9c655a3a2382bcf83a131513d70c57f8dd635576f335a9a0cf8fb1c77afb2892555e367bd427c31f53dd612fcb644c10805062ae5

@@ -43,16 +43,16 @@ public class RootController {
         return responseDto;
     }
 
-    @PostMapping("/issue")
+    @PostMapping("/login")
     public JwtTokenDto issueJwt(@RequestBody JwtRequestDto dto) {
         CustomUserDetails customUserDetails
                 = manager.loadUserByUsername(dto.getUsername());
-        /*
+
         if(!passwordEncoder.matches(dto.getPassword(), customUserDetails.getPassword())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
 
-         */
+
         JwtTokenDto jwtTokenDto = new JwtTokenDto();
         jwtTokenDto.setToken(jwtTokenUtils.generateToken(customUserDetails.getUsername()));
         return jwtTokenDto;

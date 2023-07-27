@@ -28,6 +28,7 @@ public class JwtTokenUtils {
     }
 
     public boolean validate(String token) {
+        log.info(token);
         try {
             jwtParser.parseClaimsJws(token).getBody();
             return true;

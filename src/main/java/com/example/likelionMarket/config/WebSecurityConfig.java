@@ -3,6 +3,7 @@ package com.example.likelionMarket.config;
 import com.example.likelionMarket.utils.JwtTokenFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -23,9 +24,12 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/register")
+                        .requestMatchers("/register",
+                                "/login")
                         .permitAll()
-                        .requestMatchers("/login")
+                        .requestMatchers(HttpMethod.GET, "/items")
+                        .permitAll()
+                        .requestMatchers(HttpMethod.GET, "/items/{itemId}/comments")
                         .permitAll()
                         .anyRequest()
                         .authenticated()

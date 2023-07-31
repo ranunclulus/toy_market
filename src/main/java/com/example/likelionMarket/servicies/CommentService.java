@@ -88,7 +88,7 @@ public class CommentService {
                 commentRepository.findById(commentId);
         if(commentEntityOptional.isEmpty())
             throw new CommentExistException();
-        if(!commentDto.getPassword().equals(commentEntityOptional.get().getPassword() ))
+        if(!commentDto.getPassword().equals(commentEntityOptional.get().getPassword()))
             throw new PasswordException();
         CommentEntity targetEntity = commentEntityOptional.get();
 
@@ -110,7 +110,7 @@ public class CommentService {
                 commentRepository.findById(commentId);
         if(commentEntityOptional.isEmpty())
             throw new CommentExistException();
-        if(!commentDto.getWriter().equals(salesItemRepository.findById(itemId).get().getWriter()))
+        if(!commentDto.getWriter().equals(salesItemRepository.findById(itemId).get().getUser().getUsername()))
             throw new WriterException();
         if(!commentDto.getPassword().equals(salesItemRepository.findById(itemId).get().getPassword()))
             throw new PasswordException();

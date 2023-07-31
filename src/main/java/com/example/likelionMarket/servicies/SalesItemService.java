@@ -5,6 +5,7 @@ import com.example.likelionMarket.entities.SalesItemEntity;
 import com.example.likelionMarket.exceptions.badRequest.PasswordException;
 import com.example.likelionMarket.exceptions.notFound.SalesItemExistException;
 import com.example.likelionMarket.repositories.SalesItemRepository;
+import com.example.likelionMarket.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -25,6 +26,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SalesItemService {
     private final SalesItemRepository salesItemRepository;
+    private final JpaUserDetailsManager manager;
 
     // createItem
     public void createItem(SalesItemDto salesItemDto) {
@@ -32,7 +34,7 @@ public class SalesItemService {
         newSalesItem.setId(salesItemDto.getId());
         newSalesItem.setTitle(salesItemDto.getTitle());
         newSalesItem.setDescription(salesItemDto.getDescription());
-        newSalesItem.setWriter(salesItemDto.getWriter());
+        newSalesItem.setUser(manager.loadUserByUsername(salesItemDto.getWriter()).newEntity());
         // 초기에 상태는 판매 중
         newSalesItem.setStatus("판매 중");
         newSalesItem.setPassword(salesItemDto.getPassword());
@@ -95,7 +97,7 @@ public class SalesItemService {
             targetEntity.setDescription(salesItemDto.getDescription());
         // 작성자가 수정된다면 수정
         if(salesItemDto.getWriter() != null)
-            targetEntity.setWriter(salesItemDto.getWriter());
+            targetEntity.setUser(manager.loadUserByUsername(salesItemDto.getWriter()).newEntity());
         // 판매가가 수정된다면 수정
         if(salesItemDto.getMinPriceWanted() != null)
             targetEntity.setMinPriceWanted(salesItemDto.getMinPriceWanted());

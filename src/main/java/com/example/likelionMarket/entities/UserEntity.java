@@ -1,8 +1,10 @@
 package com.example.likelionMarket.entities;
 
+import com.example.likelionMarket.dtos.SalesItemDto;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -18,4 +20,10 @@ public class UserEntity {
     private LocalDateTime createdAt;
     private String email;
     private String phone;
+
+    @OneToMany(mappedBy = "user")
+    private List<SalesItemEntity> salesItem;
+
+    @OneToMany(mappedBy = "user")
+    private List<NegotiationEntity> negotiation;
 }

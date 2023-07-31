@@ -16,13 +16,16 @@ public class NegotiationEntity {
     @JoinColumn(name = "sales_item")
     private SalesItemEntity item;
 
+    @ManyToOne
+    @JoinColumn(name = "writer")
+    private UserEntity user;
+
     @Column(nullable = false)
     private Long suggestedPrice;
 
     private String status;
 
-    @Column(nullable = false)
-    private String writer;
+
 
     private String password;
 }

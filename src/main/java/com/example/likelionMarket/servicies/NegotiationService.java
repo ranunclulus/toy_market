@@ -4,6 +4,7 @@ import com.example.likelionMarket.dtos.NegotiationDto;
 import com.example.likelionMarket.dtos.ResponseDto;
 import com.example.likelionMarket.entities.NegotiationEntity;
 import com.example.likelionMarket.entities.SalesItemEntity;
+import com.example.likelionMarket.entities.UserEntity;
 import com.example.likelionMarket.exceptions.badRequest.PasswordException;
 import com.example.likelionMarket.exceptions.badRequest.StatusException;
 import com.example.likelionMarket.exceptions.badRequest.WriterException;
@@ -11,6 +12,7 @@ import com.example.likelionMarket.exceptions.notFound.NegotiationExistException;
 import com.example.likelionMarket.exceptions.notFound.SalesItemExistException;
 import com.example.likelionMarket.repositories.NegotiationRepository;
 import com.example.likelionMarket.repositories.SalesItemRepository;
+import com.example.likelionMarket.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,6 +27,8 @@ import java.util.Optional;
 public class NegotiationService {
     private final NegotiationRepository negotiationRepository;
     private final SalesItemRepository salesItemRepository;
+    private final UserRepository userRepository;
+    private final JpaUserDetailsManager manager;
 
     // 제안 만들기
     public void createNegotiation(Long itemId, NegotiationDto negotiationDto) {
@@ -33,7 +37,7 @@ public class NegotiationService {
         }
         NegotiationEntity negotiationEntity = new NegotiationEntity();
         negotiationEntity.setId(negotiationDto.getId());
-        negotiationEntity.setWriter(negotiationDto.getWriter());
+        negotiationEntity.setUser(userRepository.findByUsername(negotiationDto.getWriter()).get());
         negotiationEntity.setItem(salesItemRepository.findById(itemId).get());
         negotiationEntity.setPassword(negotiationDto.getPassword());
         negotiationEntity.setSuggestedPrice(negotiationDto.getSuggestedPrice());
@@ -62,10 +66,10 @@ public class NegotiationService {
         NegotiationEntity negotiationEntity = negotiationEntityOptional.get();
 
         // 아이템 작성자가 수락 혹은 거절을 할 때
-        if(negotiationDto.getWriter().equals(salesItemRepository.findById(itemId).get().getWriter())) {
+        if(negotiationDto.getWriter().equals(salesItemRepository.findById(itemId).get().getUser().getUsername())) {
 
         }
-        if(!negotiationEntity.getWriter().equals(negotiationDto.getWriter())) {
+        if(!negotiationEntity.getUser().equals(negotiationDto.getWriter())) {
             throw new WriterException();
         }
 
@@ -120,8 +124,9 @@ public class NegotiationService {
                 page,
                 25,
                 Sort.by("id"));
+
         Page<NegotiationEntity> negotiationEntityPage =
-                negotiationRepository.findAllByWriterAndPassword(writer, password, pageable);
+                negotiationRepository.findAllByUser_UsernameAndPassword(writer, password, pageable);
 
         Page<NegotiationDto> negotiationDtoPage = negotiationEntityPage.map(NegotiationDto::fromEntity);
 
@@ -145,7 +150,7 @@ public class NegotiationService {
         NegotiationEntity negotiationEntity = negotiationEntityOptional.get();
 
         // 아이템 작성자 다를 때
-        if(!negotiationDto.getWriter().equals(salesItemRepository.findById(itemId).get().getWriter())) {
+        if(!negotiationDto.getWriter().equals(salesItemRepository.findById(itemId).get().getUser().getUsername())) {
             throw new WriterException();
         }
 
@@ -182,7 +187,7 @@ public class NegotiationService {
             throw new StatusException();
 
         // 제안 작성자 다를 때
-        if(!negotiationDto.getWriter().equals(negotiationEntity.getWriter())) {
+        if(!negotiationDto.getWriter().equals(negotiationEntity.getUser().getUsername())) {
             throw new WriterException();
         }
 
@@ -229,7 +234,7 @@ public class NegotiationService {
         NegotiationEntity negotiationEntity = negotiationEntityOptional.get();
 
         // 제안 작성자 다를 때
-        if(!negotiationDto.getWriter().equals(negotiationEntity.getWriter())) {
+        if(!negotiationDto.getWriter().equals(negotiationEntity.getUser().getUsername())) {
             throw new WriterException();
         }
 

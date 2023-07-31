@@ -29,7 +29,9 @@ public class SalesItemEntity {
 
     private String status;
 
-    private String writer;
+    @ManyToOne
+    @JoinColumn(name = "writer")
+    private UserEntity user;
 
     private String password;
 

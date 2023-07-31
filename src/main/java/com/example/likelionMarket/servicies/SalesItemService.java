@@ -27,6 +27,7 @@ import java.util.Optional;
 public class SalesItemService {
     private final SalesItemRepository salesItemRepository;
     private final JpaUserDetailsManager manager;
+    private final UserRepository userRepository;
 
     // createItem
     public void createItem(SalesItemDto salesItemDto) {
@@ -34,7 +35,7 @@ public class SalesItemService {
         newSalesItem.setId(salesItemDto.getId());
         newSalesItem.setTitle(salesItemDto.getTitle());
         newSalesItem.setDescription(salesItemDto.getDescription());
-        newSalesItem.setUser(manager.loadUserByUsername(salesItemDto.getWriter()).newEntity());
+        newSalesItem.setUser(userRepository.findByUsername(salesItemDto.getWriter()).get());
         // 초기에 상태는 판매 중
         newSalesItem.setStatus("판매 중");
         newSalesItem.setPassword(salesItemDto.getPassword());
@@ -97,7 +98,7 @@ public class SalesItemService {
             targetEntity.setDescription(salesItemDto.getDescription());
         // 작성자가 수정된다면 수정
         if(salesItemDto.getWriter() != null)
-            targetEntity.setUser(manager.loadUserByUsername(salesItemDto.getWriter()).newEntity());
+            targetEntity.setUser(userRepository.findByUsername(salesItemDto.getWriter()).get());
         // 판매가가 수정된다면 수정
         if(salesItemDto.getMinPriceWanted() != null)
             targetEntity.setMinPriceWanted(salesItemDto.getMinPriceWanted());

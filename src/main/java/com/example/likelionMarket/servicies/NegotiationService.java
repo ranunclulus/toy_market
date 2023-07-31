@@ -37,7 +37,7 @@ public class NegotiationService {
         }
         NegotiationEntity negotiationEntity = new NegotiationEntity();
         negotiationEntity.setId(negotiationDto.getId());
-        negotiationEntity.setUser(manager.loadUserByUsername(negotiationDto.getWriter()).newEntity());
+        negotiationEntity.setUser(userRepository.findByUsername(negotiationDto.getWriter()).get());
         negotiationEntity.setItem(salesItemRepository.findById(itemId).get());
         negotiationEntity.setPassword(negotiationDto.getPassword());
         negotiationEntity.setSuggestedPrice(negotiationDto.getSuggestedPrice());
